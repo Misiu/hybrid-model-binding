@@ -1,12 +1,11 @@
 ﻿using HybridModelBinding.Extensions;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Internal;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.Json;
 
 namespace HybridModelBinding.ModelBinding
 {
@@ -34,15 +33,21 @@ namespace HybridModelBinding.ModelBinding
 
             if (!string.IsNullOrEmpty(bodyContent))
             {
-                requestKeys = JObject
-                    .Parse(bodyContent)
-                    .Properties()
-                    .Select(x => x.Name)
-                    .ToArray();
+                using (var document = JsonDocument.Parse(bodyContent))
+                {
+                    if (document.RootElement.ValueKind == JsonValueKind.Object)
+                    {
+                        requestKeys = document
+                            .RootElement
+                            .EnumerateObject()
+                            .Select(p => p.Name)
+                            .ToArray();
+                    }
+                }
             }
 
             foreach (var property in model.GetPropertiesNotPartOfType<IHybridBoundModel>()
-                .Where(x => !requestKeys.Any() || requestKeys.Contains(x.Name, StringComparer.OrdinalIgnoreCase)))
+                         .Where(x => !requestKeys.Any() || requestKeys.Contains(x.Name, StringComparer.OrdinalIgnoreCase)))
             {
                 _values.Add(property.Name, property.GetValue(model, null));
             }
