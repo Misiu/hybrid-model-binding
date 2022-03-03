@@ -5,7 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Internal;
+using Newtonsoft.Json.Linq;
 
 namespace HybridModelBinding.ModelBinding
 {
@@ -33,17 +34,11 @@ namespace HybridModelBinding.ModelBinding
 
             if (!string.IsNullOrEmpty(bodyContent))
             {
-                using (var document = JsonDocument.Parse(bodyContent))
-                {
-                    if (document.RootElement.ValueKind == JsonValueKind.Object)
-                    {
-                        requestKeys = document
-                            .RootElement
-                            .EnumerateObject()
-                            .Select(p => p.Name)
-                            .ToArray();
-                    }
-                }
+                requestKeys = JObject
+                    .Parse(bodyContent)
+                    .Properties()
+                    .Select(x => x.Name)
+                    .ToArray();
             }
 
             foreach (var property in model.GetPropertiesNotPartOfType<IHybridBoundModel>()

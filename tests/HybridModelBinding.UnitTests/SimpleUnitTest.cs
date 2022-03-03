@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace HybridModelBinding.Tests
+namespace HybridModelBinding.UnitTests
 {
     public class SimpleUnitTest
     {
