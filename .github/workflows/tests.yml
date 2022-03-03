@@ -27,11 +27,11 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
         
-    - name: Install dependencies
-      run: dotnet restore -p:TargetFramework=${{ matrix.tfm }}
+    #- name: Install dependencies
+    #  run: dotnet restore -p:TargetFramework=${{ matrix.tfm }}
       
     - name: Build
-      run: dotnet build --configuration Release src/HybridModelBinding --no-restore
+      run: dotnet build --configuration Release src/HybridModelBinding --no-restore -f=${{ matrix.tfm }}
       
     - name: Test
       run: dotnet test --no-restore --verbosity normal -f=${{ matrix.tfm }}
