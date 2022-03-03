@@ -7,8 +7,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        dotnet-version: [ '3.1.x' ] # '5.0.x', '6.0.x' - add later
+       include:
+        - dotnet-version: '3.1.x'
+          tfm: 'netcoreapp3.1'
+        - dotnet-version: '5.0.x'
+          tfm: 'net5.0'
+        - dotnet-version: '6.0.x'
+          tfm: 'net6.0'
     # Steps that run sequentially
     steps:
     
@@ -27,4 +34,4 @@ jobs:
       run: dotnet build --configuration Release --no-restore
       
     - name: Test
-      run: dotnet test --no-restore --verbosity normal
+      run: dotnet test --no-restore --verbosity normal -f=${{ matrix.tfm }}
