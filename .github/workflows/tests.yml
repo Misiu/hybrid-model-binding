@@ -28,7 +28,7 @@ jobs:
         dotnet-version: ${{ matrix.dotnet-version }}
         
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore -p:TargetFramework=${{ matrix.tfm }}
       
     - name: Build
       run: dotnet build --configuration Release src/HybridModelBinding --no-restore
