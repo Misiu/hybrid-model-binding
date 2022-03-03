@@ -31,7 +31,7 @@ jobs:
     #  run: dotnet restore -p:TargetFramework=${{ matrix.tfm }}
       
     - name: Build
-      run: dotnet build --configuration Release src/HybridModelBinding --no-restore -f=${{ matrix.tfm }}
+      run: dotnet build --configuration Release src/HybridModelBinding -f=${{ matrix.tfm }}
       
     - name: Test
       run: dotnet test --no-restore --verbosity normal -f=${{ matrix.tfm }}
